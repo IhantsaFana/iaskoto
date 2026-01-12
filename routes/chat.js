@@ -21,6 +21,22 @@ router.post('/test-chat', async (req, res) => {
         return res.status(400).json({ error: "Le message est requis" });
     }
 
+    // --- LOGIQUE D'ACTIVATION (TRIGGER) ---
+    const cleanMessage = message.trim().toLowerCase();
+    if (cleanMessage === "ia skoto") {
+        const welcomeMessage = "Finaritra! Inona ny afaka anampiana an'ise ?";
+
+        // Optionnel: sauvegarder quand même dans l'historique
+        if (userId) {
+            await saveMessageToHistory(userId, message, welcomeMessage);
+        }
+
+        return res.json({
+            reply: welcomeMessage,
+            contextUsed: false
+        });
+    }
+
     try {
         // 1. Chercher dans la base de connaissance Sheets
         const context = await findRelevantKnowledge(message);
