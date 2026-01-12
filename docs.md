@@ -85,9 +85,9 @@ Utilisé pour la mémoire du bot.
 
 1. **Trigger** : Module "Messenger - Watch Messages".
 2. **Action** : Module "HTTP - Make a request".
-    - **URL** : `http://VOTRE_IP:3000/api/test-chat`
+    - **URL** : `http://aiskoto.vercel.app/api/test-chat`
     - **Method** : `POST`
-    - **Headers** : `x-api-key` = `votre_cle`
+    - **Headers** : `x-api-key` = `ia_OEKA_Mikofo_2026`
     - **Body (JSON)** :
         - `message` : `{{sender_message_text}}`
         - `userId` : `{{sender_id}}`
