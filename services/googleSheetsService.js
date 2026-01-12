@@ -5,10 +5,22 @@ import path from 'path';
 dotenv.config();
 
 // Configuration de l'authentification Google
-const auth = new google.auth.GoogleAuth({
-    keyFile: path.join(process.cwd(), 'credentials.json'),
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
+let auth;
+
+if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+    // Mode Production (Vercel) : Utilise le JSON stocké dans une variable d'environnement
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+    auth = new google.auth.GoogleAuth({
+        credentials,
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+} else {
+    // Mode Développement local : Utilise le fichier physique
+    auth = new google.auth.GoogleAuth({
+        keyFile: path.join(process.cwd(), 'credentials.json'),
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+}
 
 const sheets = google.sheets({ version: 'v4', auth });
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
