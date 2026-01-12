@@ -41,7 +41,7 @@ router.post('/test-chat', async (req, res) => {
 
         res.json({
             reply: aiResponse,
-            contextUsed: context ? "Oui" : "Non"
+            contextUsed: !!context
         });
     } catch (error) {
         console.error("Erreur Chat Route:", error);

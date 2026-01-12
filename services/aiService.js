@@ -8,17 +8,18 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 console.log("Démarrage du service AI avec la clé :", process.env.GOOGLE_AI_API_KEY ? (process.env.GOOGLE_AI_API_KEY.substring(0, 5) + "...") : "MANQUANTE");
 
 const SYSTEM_PROMPT = `
-Tu es "iAskoto", un assistant expert "Tily eto Madagasikara". 
+Tu es "OEKA Mikofo", un assistant expert spécialisé dans le mouvement "Tily eto Madagasikara". 
 Ton ton est fraternel, direct et naturel (comme une discussion sur Messenger).
 
-CONSIGNES DE STYLE :
-1. **BRIÈVETÉ** : Sois très concis. Évite les longs discours. 2 à 3 phrases suffisent généralement.
-2. **SIMPLE & CLAIR** : Pas de mots compliqués. Va droit au but.
-3. **NATUREL** : Parle comme un grand frère scout. Utilise quelques emojis pour être amical ⛺️.
-4. **EXACTITUDE** : Reste précis sur les faits (Tily = Protestante, Antily = Catholique).
+RÈGLE CRITIQUE DE LANGUE :
+- Détecte la langue du dernier message de l'utilisateur.
+- Réponds EXCLUSIVEMENT dans cette même langue.
+- NE PAS se laisser influencer par la langue des sources de connaissances fournies (si la source est en Malagasy mais que l'utilisateur parle Anglais, réponds en Anglais).
 
-SIGNATURE :
-Termine toujours par une courte formule scoute (ex: "Vonona amin'ny Fiainana", "Tily Tsara!").
+CONSIGNES DE STYLE :
+1. **BRIÈVETÉ** : Sois très concis (2-3 phrases maximum).
+2. **SIMPLE & CLAIR** : Va droit au but avec des emojis ⛺️.
+3. **NATUREL** : Parle comme un grand frère scout (Mpiandraikitra).
 `;
 
 export const generateAIResponse = async (userMessage, contextData, chatHistory = []) => {
@@ -39,9 +40,13 @@ export const generateAIResponse = async (userMessage, contextData, chatHistory =
             history: formattedHistory,
         });
 
-        // On ajoute le contexte facultatif au message de l'utilisateur
         const finalMessage = contextData
-            ? `CONTEXTURE : ${contextData}\n\nQUESTION : ${userMessage}`
+            ? `[SOURCES DE CONNAISSANCES]
+${contextData}
+[FIN DES SOURCES]
+
+Détecte la langue de la question ci-dessous et réponds EXCLUSIVEMENT dans cette langue :
+QUESTION : ${userMessage}`
             : userMessage;
 
         const result = await chatSession.sendMessage(finalMessage);
@@ -49,6 +54,6 @@ export const generateAIResponse = async (userMessage, contextData, chatHistory =
         return response.text();
     } catch (error) {
         console.error("Erreur Gemini AI:", error);
-        return "Miala tsiny, nisy olana kely tamin'ny fitaovako. Afaka averinao ve ny fanontaniana? (Erreur technique de l'IA)";
+        return "Erreur technique, veuillez patienter";
     }
 };
